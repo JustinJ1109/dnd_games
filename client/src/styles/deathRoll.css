@@ -1,0 +1,76 @@
+.death-roll-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reel-mask {
+    display: flex;
+    overflow: hidden;
+    width: 300px;
+    /* Width for three boxes */
+    height: 100px;
+    border: 2px solid #ffc733;
+    background-color: #333;
+    border-radius: 8px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.reel {
+    display: flex;
+    width: 10000px;
+    /* Lengthen to simulate continuous reel */
+    position: relative;
+}
+
+.reel.spinning {
+    animation: spin 0.1s linear infinite;
+    /* Fast spinning */
+}
+
+@keyframes spin {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-100%);
+        /* Adjust to simulate fast movement */
+    }
+}
+
+.reel-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffc733;
+}
+
+/* Highlight the middle box when reel stops */
+.highlight {
+    border: 3px solid #ffd700;
+    background-color: #444;
+    box-shadow: 0 0 15px #ffd700;
+    transform: scale(1.1);
+}
+
+.roll-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #ffc733;
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.roll-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
