@@ -5,9 +5,24 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: cyan;
+
 }
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.game-space {
+  padding: 50px;
+}
+
+.button-box {
+  margin: 5px;
+}
+
+.button-box * {
+  margin: 20px;
 }

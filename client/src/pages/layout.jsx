@@ -10,10 +10,13 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
+import { useCurrency } from '../components/currencyContext';
 
 const pages = { "Fiend's Favor": "fiends-favor", 'Death Roll': 'death-roll', 'Slots': 'slots' };
 
 function Layout() {
+    const { soulCoins } = useCurrency();
+
     const navigate = useNavigate();
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -33,6 +36,10 @@ function Layout() {
         setAnchorElUser(null);
     };
 
+    const cashOut = () => {
+        navigate("/cashout")
+    }
+
     return (
         <AppBar position="static" color="navbar">
             <Container maxWidth="xl">
@@ -41,7 +48,7 @@ function Layout() {
                         variant="h6"
                         noWrap
                         component="a"
-                        href="/"
+                        onClick={() => navigate("/")}
                         sx={{
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
@@ -105,7 +112,7 @@ function Layout() {
                             textDecoration: 'none',
                         }}
                     >
-                        LOGO
+                        Games
                     </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {Object.keys(pages).map((page) => {
@@ -120,6 +127,17 @@ function Layout() {
                                 </Button>
                             )
                         })}
+                    </Box>
+                    {soulCoins > 0 && <Button
+                        style={{ marginRight: '15px' }}
+                        variant="contained"
+                        color="gold"
+                        onClick={cashOut}
+                    >
+                        Cash Out
+                    </Button>}
+                    <Box>
+                        Soul Coins: {soulCoins}
                     </Box>
                 </Toolbar>
             </Container>

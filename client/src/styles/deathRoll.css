@@ -8,7 +8,6 @@
     display: flex;
     overflow: hidden;
     width: 300px;
-    /* Width for three boxes */
     height: 100px;
     border: 2px solid #ffc733;
     background-color: #333;
@@ -19,25 +18,8 @@
 
 .reel {
     display: flex;
-    width: 10000px;
-    /* Lengthen to simulate continuous reel */
-    position: relative;
-}
-
-.reel.spinning {
-    animation: spin 0.1s linear infinite;
-    /* Fast spinning */
-}
-
-@keyframes spin {
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(-100%);
-        /* Adjust to simulate fast movement */
-    }
+    width: 100%;
+    justify-content: center;
 }
 
 .reel-box {
@@ -49,6 +31,7 @@
     font-size: 24px;
     font-weight: bold;
     color: #ffc733;
+    transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 /* Highlight the middle box when reel stops */
@@ -57,6 +40,14 @@
     background-color: #444;
     box-shadow: 0 0 15px #ffd700;
     transform: scale(1.1);
+}
+
+/* Drop animation for numbers being removed */
+.drop {
+    transform: translateY(50px);
+    /* Move down by 50px */
+    opacity: 0;
+    /* Fade out */
 }
 
 .roll-button {

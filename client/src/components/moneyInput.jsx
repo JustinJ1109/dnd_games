@@ -1,14 +1,34 @@
 import * as React from 'react';
 import { useState } from "react";
 import "../styles/moneyInput.css";
-import { TextField } from '@mui/material';
+import { TextField, Button, Tooltip, Box } from '@mui/material';
+import { useCurrency } from './currencyContext';
 
-const MoneyInput = ({ wager, setWager, totalSoulCoins }) => {
+const MoneyInput = ({ wager, setWager }) => {
+    const { convertToSoulCoins, soulCoins, setSoulCoins } = useCurrency();
 
-    const updateWager = (e) => {
-        let currency = e.target.id.replace("-text", "");
-        setWager({ ...wager, [currency]: parseInt(e.target.value) || 0 });
+    // Local state to hold input values
+    const [gold, setInputGold] = useState(0);
+    const [silver, setInputSilver] = useState(0);
+    const [copper, setInputCopper] = useState(0);
+
+    // Calculate total SoulCoins based on input values
+    const totalSoulCoins = (gold * 10) + (silver * 1) + (copper * 0.1);
+    const handleConvert = () => {
+        convertToSoulCoins(gold, silver, copper);
+
+        // Reset inputs after conversion
+        setInputGold(0);
+        setInputSilver(0);
+        setInputCopper(0);
     };
+
+    const resetCoins = () => {
+        setInputGold(0);
+        setInputSilver(0)
+        setInputCopper(0)
+        setSoulCoins(0)
+    }
 
     return (
         <div style={{ margin: '1em', display: 'flex', alignItems: 'center' }}>
@@ -21,8 +41,8 @@ const MoneyInput = ({ wager, setWager, totalSoulCoins }) => {
                     variant="outlined"
                     color="gold"
                     placeholder="0"
-                    onChange={updateWager}
-                    value={wager.gold}
+                    onChange={(e) => setInputGold(parseInt(e.target.value) || 0)}
+                    value={gold}
                     focused
                 />
                 <TextField
@@ -33,9 +53,9 @@ const MoneyInput = ({ wager, setWager, totalSoulCoins }) => {
                     variant="outlined"
                     color="silver"
                     placeholder="0"
-                    onChange={updateWager}
-                    value={wager.silver}
+                    onChange={(e) => setInputSilver(parseInt(e.target.value) || 0)}
                     focused
+                    value={silver}
                 />
                 <TextField
                     fullWidth
@@ -45,10 +65,23 @@ const MoneyInput = ({ wager, setWager, totalSoulCoins }) => {
                     variant="outlined"
                     color="copper"
                     placeholder="0"
-                    onChange={updateWager}
-                    value={wager.copper}
+                    onChange={(e) => setInputCopper(parseInt(e.target.value) || 0)}
                     focused
+                    value={copper}
                 />
+                <Box className="button-box">
+                    <Tooltip title="Convert Gold, Silver, and Copper to Soul Coins">
+                        <Button variant='outlined' onClick={handleConvert}>
+                            Convert
+                        </Button>
+                    </Tooltip>
+                    <Tooltip title="Reset SoulCoins and input boxes" >
+                        <Button variant='outlined' color='secondary' onClick={resetCoins}>
+                            Reset
+                        </Button>
+                    </Tooltip>
+
+                </Box>
             </div>
             <div style={{
                 display: 'flex',
