@@ -5,7 +5,13 @@ import Die from "../components/die";
 import { Button } from "@mui/material";
 import '../styles/rollDice.css'
 import WagerButton from "../components/wagerButton";
+import Rules from "../components/rules";
 
+const PAY_TABLE = {
+    1: 1,
+    2: 2,
+    3: 3
+}
 
 const MIN_WAGER = 10
 const SIDES = ['one', 'two', 'three',
@@ -50,7 +56,7 @@ const FiendsFavor = () => {
             setRolling(false)
             let matchCount = diceValues.filter(val => val === selectedNumber).length;
             if (matchCount > 0)
-                setPayout(wager * matchCount)
+                setPayout(wager * PAY_TABLE[matchCount])
         }, 1000)
     }
 
@@ -66,37 +72,7 @@ const FiendsFavor = () => {
         <div className="game-space">
             <div className="row">
                 <div className="col-4">
-                    <div className="row rules" >
-                        <em>Rules:</em>
-                        <hr />
-                        <p>
-                            <ul>
-                                <li>
-                                    Add all the funds you want to gamble
-                                </li>
-                                <li>
-                                    Choose a number 1-6
-                                </li>
-                                <li>
-                                    Roll the Dice
-                                    <ul>
-                                        <li>
-                                            0 matches: House wins
-                                        </li>
-                                        <li>
-                                            1 match: 1:1 payout
-                                        </li>
-                                        <li>
-                                            2 matches: 2:1 payout
-                                        </li>
-                                        <li>
-                                            3 matches: 3:1 payout
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </p>
-                    </div>
+                    <Rules gamemode={"fiends-favor"} />
                 </div>
                 <div className="col num-select">
 

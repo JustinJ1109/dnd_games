@@ -1,0 +1,121 @@
+.roulette-table {
+    /* background-color: #2a2a2a; */
+    background-color: green;
+    display: inline-block;
+}
+
+.roulette-grid {
+    display: grid;
+    gap: 5px;
+    padding: 20px;
+}
+
+.roulette-numbergrid {
+    grid-template-columns: repeat(13, 50px);
+    grid-auto-flow: column;
+}
+
+.roulette-12grid {
+    /* grid-template-columns: repeat(3, 150px); */
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, 215px);
+    margin-left: 50px;
+}
+
+.roulette-betting-groups {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(6, 105px);
+    margin-left: 50px;
+}
+
+.roulette-group {
+    color: white;
+}
+
+.roulette-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+    text-align: center;
+    border: 1px solid yellow;
+    cursor: pointer;
+}
+
+.roulette-box span {
+    pointer-events: none;
+}
+
+.roulette-box:hover {
+    border: 1px solid rgb(221, 210, 115);
+    background-color: rgb(4, 82, 4);
+}
+
+.roulette-numberbox {
+    height: 50px;
+    width: 50px;
+}
+
+.roulette-groupbox {
+    height: 50px;
+}
+
+._12s {
+    width: 215px;
+}
+
+._6 {
+    width: 108px;
+}
+
+._1st-12 {
+    grid-column: 1;
+}
+
+._2nd-12 {
+    grid-column: 2;
+}
+
+._3rd-12 {
+    grid-column: 3;
+}
+
+.roulette-numberbox.green {
+    background-color: green;
+}
+
+.roulette-numberbox.green:hover {
+    background-color: rgb(10, 80, 10);
+}
+
+.roulette-numberbox.red {
+    background-color: red;
+}
+
+.roulette-numberbox.red:hover {
+    background-color: rgb(148, 5, 5);
+}
+
+.roulette-numberbox.black {
+    background-color: black;
+}
+
+.roulette-numberbox.black:hover {
+    background-color: rgb(49, 49, 49);
+}
+
+/* Adjust 0 and 00 positioning to span first two rows in the first column */
+.roulette-numberbox.roulette-0 {
+    grid-column: 1;
+    grid-row: 1;
+    border: 1px solid yellow;
+}
+
+.roulette-numberbox.roulette-00 {
+    grid-column: 1;
+    grid-row: 2;
+    border: 1px solid yellow;
+
+}

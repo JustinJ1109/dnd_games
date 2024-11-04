@@ -17,6 +17,7 @@ import NotFound from './pages/notFound';
 import { CurrencyProvider } from './components/currencyContext';
 import MoneyInput from './components/moneyInput';
 import Cashout from './pages/cashout';
+import Roulette from './pages/roulette';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -35,6 +36,7 @@ root.render(
             <Route path="/slots" element={<Slots submitBet={submitBet} />} />
             <Route path="/death-roll" element={<DeathRoll submitBet={submitBet} />} />
             <Route path="/cashout" element={<Cashout />} />
+            <Route path="/roulette" element={<Roulette />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </ThemeProvider>

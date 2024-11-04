@@ -154,8 +154,8 @@ const DeathRoll = () => {
     return (
         <div>
             <div className='text-center'>
-                {gameOver && payout ? <span>Win {payout}</span> :
-                    gameOver && !payout ? <span>Womp Womp!</span> :
+                {gameOver && payout ? <span><h2>Win {payout}</h2></span> :
+                    gameOver && !payout ? <span><h2>Womp Womp!</h2></span> :
                         playersTurn ? <span>Your turn</span> :
                             <span>House's Turn</span>}
             </div>
