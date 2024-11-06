@@ -2,15 +2,18 @@ import React, { useEffect, useState } from "react"
 import TextField from '@mui/material/TextField';
 import { useCurrency } from "../components/currencyContext";
 import Die from "../components/die";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import '../styles/rollDice.css'
+import '../styles/fiends_favor.css'
+
 import WagerButton from "../components/wagerButton";
 import Rules from "../components/rules";
+import { useTheme } from "@emotion/react";
 
 const PAY_TABLE = {
-    1: 1,
-    2: 2,
-    3: 3
+    1: 2,
+    2: 3,
+    3: 4
 }
 
 const MIN_WAGER = 10
@@ -18,6 +21,7 @@ const SIDES = ['one', 'two', 'three',
     'four', 'five', 'six']
 
 const FiendsFavor = () => {
+    const theme = useTheme()
     const { soulCoins, setSoulCoins } = useCurrency();
     const [selectedNumber, setSelectedNumber] = useState(null)
 
@@ -69,9 +73,9 @@ const FiendsFavor = () => {
     const handleBtn = rolling ?
         'RollDice-rolling' : ''
     return (
-        <div className="game-space">
+        <Box className="game-space" sx={{ backgroundColor: "game.main", color: "game.contrastText" }} >
             <div className="row">
-                <div className="col-4">
+                <div className="col-sm col-md-4">
                     <Rules gamemode={"fiends-favor"} />
                 </div>
                 <div className="col num-select">
@@ -79,7 +83,7 @@ const FiendsFavor = () => {
                     <div className="row">
                         <div className="col" />
                         <div className="col">
-                            <TextField label="Choose a number" variant="outlined" placeholder="1-6" onChange={(e) => setSelectedNumber(parseInt(e.target.value))} focused />
+                            <TextField sx={{ borderColor: "game.main", input: { color: "game.contrastText", backgroundColor: "game.main" } }} label="Choose a number" variant="outlined" placeholder="1-6" onChange={(e) => setSelectedNumber(parseInt(e.target.value))} focused />
                         </div>
                         <div className="col" />
                     </div>
@@ -99,7 +103,7 @@ const FiendsFavor = () => {
                                     disabled={rolling}>
                                     {rolling ? 'Rolling' : 'Roll Dice!'}
                                 </Button>
-                                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} />
+                                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={rolling} />
                             </div>
                         </div>
                         <div className="col" />
@@ -116,7 +120,7 @@ const FiendsFavor = () => {
                 </div>
                 <div className="col-3" />
             </div>
-        </div>
+        </Box>
     )
 }
 

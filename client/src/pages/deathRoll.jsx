@@ -180,7 +180,7 @@ const DeathRoll = () => {
                 </button>
             </div>
             <div className='row text-center'>
-                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} />
+                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={inGame} />
             </div>
         </div>
     );

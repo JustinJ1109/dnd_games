@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Wheel } from "react-custom-roulette";
 import { Button, Typography, Box, Table, TableHead, TableRow, TableCell, TableBody } from "@mui/material";
 import RouletteBettingTable from "../components/rouletteTable";
@@ -35,9 +35,8 @@ const WAGER_TYPES = {
 
 const MIN_BET = 10;
 
-const RouletteWagers = ({ wagers, setWagers }) => {
+const RouletteWagers = ({ wagers, setWagers, disabled }) => {
     const { soulCoins, setSoulCoins } = useCurrency();
-
     return (
         <div style={{ display: "inline-block" }}>
             <h3>Your Wagers</h3>
@@ -47,7 +46,9 @@ const RouletteWagers = ({ wagers, setWagers }) => {
                         console.log(prev)
                         const { [e.target.id.substring("button-".length)]: _, ...rest } = prev
                         return rest
-                    })}>X</Button>
+                    })}
+                        disabled={disabled}
+                    >X</Button>
                     <span className="wager-type">{WAGER_TYPES[wager] ? WAGER_TYPES[wager] : wager}</span>: <span className="wager-amt">{wagers[wager]} Soul Coins</span>
                 </div>
             ))}
@@ -65,19 +66,31 @@ const RouletteWagers = ({ wagers, setWagers }) => {
 }
 
 const Roulette = () => {
+    const { soulCoins, setSoulCoins } = useCurrency();
+
     const [spinResult, setSpinResult] = useState(null);
     const [isSpinning, setIsSpinning] = useState(false);
 
     const [wagers, setWagers] = useState({})
     const [selectedBetAmount, setSelectedBetAmount] = useState(MIN_BET);
+    const [winningWagers, setWinningWagers] = useState([])
+    const [totalPayout, setTotalPayout] = useState(0);
+
+    const getTotalWagers = () => (
+        Object.values(wagers).reduce((sum, val) => sum + val, 0)
+    )
 
     const addWager = (e) => {
-        console.log(e.target.id)
         setWagers((prev) => ({ ...prev, [e.target.id.substring(4)]: selectedBetAmount }))
     }
 
     // Handle spin and determine winnings
     const handleSpin = () => {
+        if (soulCoins < getTotalWagers()) {
+            alert("Insufficient Funds")
+            return
+        }
+        setSoulCoins((prev) => prev - getTotalWagers())
         const winningIndex = Math.floor(Math.random() * data.length);
         setSpinResult(winningIndex);
         setIsSpinning(true);
@@ -133,6 +146,7 @@ const Roulette = () => {
             }
         });
         payoutWinningWagers(winningWagers)
+        console.log(winningWagers)
     }
 
     const payoutWinningWagers = (winningWagers) => {
@@ -141,48 +155,82 @@ const Roulette = () => {
         winningWagers.forEach(wager => {
             const [[k, v]] = Object.entries(wager)
             console.log(k, v)
-            totalPayout += v + (payoutRatios[k] * v)
+            if (k in payoutRatios) {
+                totalPayout += v + (payoutRatios[k] * v)
+            }
+            else {
+                totalPayout += v + (v * payoutRatios.number)
+            }
         })
         console.log("TP", totalPayout)
+        setSoulCoins((prev) => prev + totalPayout)
+        setWinningWagers(winningWagers)
+        setTotalPayout(totalPayout)
     }
 
     return (
         <Box className="roulette-game" sx={{ padding: 3 }}>
-            <Rules gamemode={"roulette"} />
-            <div style={{ display: "inline-block" }}>
-                {/* Wheel */}
-                <Wheel
-                    mustStartSpinning={isSpinning}
-                    prizeNumber={spinResult}
-                    data={data}
-                    onStopSpinning={handleStopSpin}
-                    perpendicularText
-                    textDistance={80}
-                />
-                <WagerButton min_wager={MIN_BET} setWager={setSelectedBetAmount} wager={selectedBetAmount} />
-                <RouletteBettingTable onClick={addWager} />
-                <RouletteWagers wagers={wagers} setWagers={setWagers} />
+            <div className="row">
+                <div className="col-3">
+                    <Rules gamemode={"roulette"} />
+                </div>
+
+                <div className="col text-center">
+                    <div style={{ display: "inline-block" }}>
+                        {/* Wheel */}
+                        <Wheel
+                            mustStartSpinning={isSpinning}
+                            prizeNumber={spinResult}
+                            data={data}
+                            onStopSpinning={handleStopSpin}
+                            perpendicularText
+                            textDistance={80}
+                        />
+                        <WagerButton min_wager={MIN_BET} setWager={setSelectedBetAmount} wager={selectedBetAmount} />
+                        {/* Spin Button */}
+                        <Box sx={{ mt: 2 }}>
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={handleSpin}
+                                disabled={isSpinning || Object.keys(wagers).length === 0 || soulCoins < getTotalWagers()}
+                            >
+                                Spin
+                            </Button>
+                        </Box>
+                    </div>
+                </div>
+                <div className="col">
+                    <RouletteBettingTable className="betting-table" onClick={addWager} disabled={isSpinning} />
+                    <RouletteWagers className="wagers-list" wagers={wagers} setWagers={setWagers} disabled={isSpinning} />
+                </div>
+
             </div>
 
-            {/* Spin Button */}
-            <Box sx={{ mt: 2 }}>
-                <Button
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleSpin}
-                    disabled={isSpinning || Object.keys(wagers).length === 0}
-                >
-                    Spin
-                </Button>
-            </Box>
+
 
             {/* Display Spin Result */}
-            {!isSpinning && spinResult !== null && (
-                <Typography variant="h6" sx={{ mt: 2 }}>
-                    Winning Number: {data[spinResult]?.option}
-                </Typography>
-            )}
-        </Box>
+            {
+                !isSpinning && spinResult !== null && (
+                    <Box>
+                        <Typography variant="h6" sx={{ mt: 2 }}>
+                            Winning Number: {data[spinResult]?.option}
+                        </Typography>
+                        <Box>
+                            Winning Wagers:
+                            <ul>
+                                {winningWagers.map((w) => (
+                                    <li key={Object.keys(w)[0]}>
+                                        {WAGER_TYPES[Object.keys(w)[0]] ?? Object.keys(w)[0]} : {w[Object.keys(w)[0]]}
+                                    </li>
+                                ))}
+                            </ul>
+                            Total: {totalPayout} Soul Coins
+                        </Box>
+                    </Box>
+                )
+            }
+        </Box >
     );
 };
 

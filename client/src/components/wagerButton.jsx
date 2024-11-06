@@ -1,15 +1,22 @@
 import { TextField } from "@mui/material"
+import { useCurrency } from "./currencyContext";
+import { useTheme } from "@emotion/react";
 
-const WagerButton = ({ min_wager, wager, setWager, ...props }) => {
+const WagerButton = ({ min_wager, wager, setWager, disabled, ...props }) => {
+    const { soulCoins, setSoulCoins } = useCurrency();
+    const theme = useTheme()
 
     const validateWager = (e) => {
+        if (disabled) {
+            return
+        }
         let newWager = parseInt(e.target.value)
         if (isNaN(newWager)) {
             newWager = min_wager
         }
-        else if (newWager < min_wager) {
+        else if (newWager < min_wager || newWager > soulCoins) {
             setWager(min_wager)
-            console.log("Bad wager")
+            alert("Bad Wager")
             e.target.value = min_wager
             return
         }
@@ -18,8 +25,19 @@ const WagerButton = ({ min_wager, wager, setWager, ...props }) => {
     }
 
     return (
-        <div className='wager-text'>
-            Wager: <span><TextField size="small" style={{ width: '100px' }} onBlur={validateWager} placeholder={min_wager.toString()}>{wager}</TextField></span> Soul Coins
+        <div className='wager-text' style={{ margin: "10px" }}>
+            Wager:
+            <span>
+                <TextField
+                    disabled={disabled}
+                    size="small"
+                    sx={{ ml: "10px", mr: "10px", borderColor: "game.main", input: { color: "game.contrastText", backgroundColor: "game.main" }, width: '100px' }}
+                    onBlur={validateWager}
+                    placeholder={min_wager.toString()}
+                >
+                    {wager}
+                </TextField>
+            </span> Soul Coins
         </div>
     )
 }

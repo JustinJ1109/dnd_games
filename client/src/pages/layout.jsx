@@ -12,9 +12,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { useNavigate } from 'react-router-dom';
 import { useCurrency } from '../components/currencyContext';
 
-const pages = { "Fiend's Favor": "fiends-favor", 'Death Roll': 'death-roll', 'Slots': 'slots', "Roulette": "roulette" };
 
-function Layout() {
+function Layout({ pages }) {
     const { soulCoins } = useCurrency();
 
     const navigate = useNavigate();

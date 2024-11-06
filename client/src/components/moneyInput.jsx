@@ -31,8 +31,8 @@ const MoneyInput = ({ wager, setWager }) => {
     }
 
     return (
-        <div style={{ margin: '1em', display: 'flex', alignItems: 'center' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', width: '200px' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', backgroundColor: "white", p: "10px" }}>
                 <TextField
                     fullWidth
                     id="gold-text"
@@ -44,6 +44,7 @@ const MoneyInput = ({ wager, setWager }) => {
                     onChange={(e) => setInputGold(parseInt(e.target.value) || 0)}
                     value={gold}
                     focused
+                    sx={{ mb: "10px" }}
                 />
                 <TextField
                     fullWidth
@@ -56,6 +57,7 @@ const MoneyInput = ({ wager, setWager }) => {
                     onChange={(e) => setInputSilver(parseInt(e.target.value) || 0)}
                     focused
                     value={silver}
+                    sx={{ mb: "10px" }}
                 />
                 <TextField
                     fullWidth
@@ -68,22 +70,23 @@ const MoneyInput = ({ wager, setWager }) => {
                     onChange={(e) => setInputCopper(parseInt(e.target.value) || 0)}
                     focused
                     value={copper}
+                    sx={{ mb: "10px" }}
                 />
-                <Box className="button-box">
-                    <Tooltip title="Convert Gold, Silver, and Copper to Soul Coins">
+                <Box className="button-box row" sx={{ m: "5px" }}>
+                    <Tooltip className='col' sx={{ m: "5px" }} title="Convert Gold, Silver, and Copper to Soul Coins">
                         <Button variant='outlined' onClick={handleConvert}>
                             Convert
                         </Button>
                     </Tooltip>
-                    <Tooltip title="Reset SoulCoins and input boxes" >
+                    <Tooltip className='col' sx={{ m: "5px" }} title="Reset SoulCoins and input boxes" >
                         <Button variant='outlined' color='secondary' onClick={resetCoins}>
                             Reset
                         </Button>
                     </Tooltip>
 
                 </Box>
-            </div>
-            <div style={{
+            </Box>
+            <Box style={{
                 display: 'flex',
                 alignItems: 'center',
                 marginLeft: '1em',
@@ -91,8 +94,8 @@ const MoneyInput = ({ wager, setWager }) => {
             }}>
                 <span style={{ marginRight: '0.5em', fontSize: '1.5em', lineHeight: '1em' }}>X</span>
                 <span style={{ fontSize: '1.5em' }}>Soul Coins: {totalSoulCoins}</span>
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 };
 

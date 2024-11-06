@@ -8,7 +8,7 @@ const theme = createTheme({
         },
         gold: {
             main: "#ffc733",
-            contrastText: "#2e2e2e"
+            contrastText: "#2e2e2e",
         },
         silver: {
             main: "#e0e0e4",
@@ -26,6 +26,11 @@ const theme = createTheme({
         dark: {
             main: "#212121",
             contrastText: "#e3e3e3"
+        },
+        game: {
+            main: "#3a3a49",
+            contrastText: "#b8cfd6",
+            secondary: "#98a3a1"
         },
     }
 })

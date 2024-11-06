@@ -1,6 +1,8 @@
 .roulette-table {
     /* background-color: #2a2a2a; */
-    background-color: green;
+    background-color: rgb(52, 78, 52);
+    border: 2px solid rgb(110, 110, 0);
+    border-radius: 15px;
     display: inline-block;
 }
 
@@ -42,6 +44,16 @@
     text-align: center;
     border: 1px solid yellow;
     cursor: pointer;
+}
+
+.roulette-box.disabled {
+    background-color: rgb(46, 46, 46, .9) !important;
+    color: rgb(99, 99, 99) !important;
+    border: 1px solid rgb(102, 102, 54) !important;
+}
+
+.roulette-box.disabled span {
+    color: rgb(46, 46, 46) !important;
 }
 
 .roulette-box span {

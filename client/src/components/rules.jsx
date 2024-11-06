@@ -1,17 +1,16 @@
 
 
 const Rules = ({ gamemode }) => {
-
     const getRulesForGamemode = () => {
         if (gamemode === "fiends-favor") {
             return (
-                <p>
+                <>
                     <ul>
                         <li>
-                            Add all the funds you want to gamble
+                            Choose a number 1-6
                         </li>
                         <li>
-                            Choose a number 1-6
+                            Choose your wager amount
                         </li>
                         <li>
                             Roll the Dice
@@ -31,7 +30,7 @@ const Rules = ({ gamemode }) => {
                             </ul>
                         </li>
                     </ul>
-                </p>
+                </>
             )
         }
         else if (gamemode === "roulette") {
