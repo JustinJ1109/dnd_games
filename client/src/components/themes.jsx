@@ -12,11 +12,13 @@ const theme = createTheme({
         },
         silver: {
             main: "#e0e0e4",
-            contrastText: "#4287f5"
+            contrastText: "#4287f5",
+            secondary: "#b5945b"
         },
         copper: {
-            main: "#9b7c3a",
-            contrastText: "#4287f5"
+            main: "#fefefe",
+            contrastText: "#fefefe",
+            secondary: "#b5945b"
 
         },
         soul: {
@@ -27,11 +29,15 @@ const theme = createTheme({
             main: "#212121",
             contrastText: "#e3e3e3"
         },
-        game: {
+        fiendsFavor: {
             main: "#3a3a49",
             contrastText: "#b8cfd6",
             secondary: "#98a3a1"
         },
+        deathRoll: {
+            main: "#443747",
+            contrastText: "white"
+        }
     }
 })
 

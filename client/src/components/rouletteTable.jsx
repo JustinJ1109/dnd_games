@@ -15,7 +15,7 @@ const RouletteBettingTable = ({ onClick, disabled }) => {
     return (
         <div className="roulette-table" style={{ "pointerEvents": disabled ? "none" : "auto", margin: "25px" }}>
             <div className="roulette-grid roulette-numbergrid">
-                <div id="bet-0" className={`roulette-numberbox roulette-box green roulette-0  ${disabled ? 'disabled' : ''}`} onClick={onClick}>0</div>
+                <div style={{ height: "50px" }} id="bet-0" className={`roulette-numberbox roulette-box green roulette-0  ${disabled ? 'disabled' : ''}`} onClick={onClick}>0</div>
                 <div id="bet-00" className={`roulette-numberbox roulette-box green roulette-00  ${disabled ? 'disabled' : ''}`} onClick={onClick}>00</div>
                 {numbers.map((num, index) => (
                     <div

@@ -21,7 +21,7 @@ const SIDES = ['one', 'two', 'three',
     'four', 'five', 'six']
 
 const FiendsFavor = () => {
-    const theme = useTheme()
+    const theme = useTheme().palette.fiendsFavor
     const { soulCoins, setSoulCoins } = useCurrency();
     const [selectedNumber, setSelectedNumber] = useState(null)
 
@@ -73,7 +73,7 @@ const FiendsFavor = () => {
     const handleBtn = rolling ?
         'RollDice-rolling' : ''
     return (
-        <Box className="game-space" sx={{ backgroundColor: "game.main", color: "game.contrastText" }} >
+        <Box className="game-space" >
             <div className="row">
                 <div className="col-sm col-md-4">
                     <Rules gamemode={"fiends-favor"} />
@@ -83,7 +83,7 @@ const FiendsFavor = () => {
                     <div className="row">
                         <div className="col" />
                         <div className="col">
-                            <TextField sx={{ borderColor: "game.main", input: { color: "game.contrastText", backgroundColor: "game.main" } }} label="Choose a number" variant="outlined" placeholder="1-6" onChange={(e) => setSelectedNumber(parseInt(e.target.value))} focused />
+                            <TextField label="Choose a number" variant="outlined" placeholder="1-6" onChange={(e) => setSelectedNumber(parseInt(e.target.value))} focused />
                         </div>
                         <div className="col" />
                     </div>
@@ -103,7 +103,7 @@ const FiendsFavor = () => {
                                     disabled={rolling}>
                                     {rolling ? 'Rolling' : 'Roll Dice!'}
                                 </Button>
-                                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={rolling} />
+                                <WagerButton theme={theme} min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={rolling} />
                             </div>
                         </div>
                         <div className="col" />

@@ -1,4 +1,4 @@
-import { Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import { Box, Button, Container, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import { useCurrency } from "../components/currencyContext";
 import { useState } from "react";
 
@@ -10,32 +10,31 @@ const Cashout = () => {
         copper: (soulCoins * 10 % 10)
     });
     return (
-        <div color="dark">
-            Soul coins: {soulCoins}
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Currency</TableCell>
-                            <TableCell>Amount</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {Object.keys(currencyReturned).map((currType) => (
+        <Box>
+            <Container>
+                <TableContainer component={Paper}>
+                    <Table>
+                        <TableHead>
                             <TableRow>
-                                <TableCell>{currType}</TableCell>
-                                <TableCell>{currencyReturned[currType]}</TableCell>
-
+                                <TableCell>Currency</TableCell>
+                                <TableCell>Amount</TableCell>
                             </TableRow>
-
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <Button variant='outlined' color='secondary' onClick={() => setSoulCoins(0)}>
-                Reset
-            </Button>
-        </div >
+                        </TableHead>
+                        <TableBody>
+                            {Object.keys(currencyReturned).map((currType) => (
+                                <TableRow>
+                                    <TableCell>{currType}</TableCell>
+                                    <TableCell>{currencyReturned[currType].toFixed(2)}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <Button sx={{ justifyContent: "center", alignContent: "center", display: "flex" }} variant='contained' color='secondary' onClick={() => setSoulCoins(0)}>
+                    Reset
+                </Button>
+            </Container>
+        </Box >
     )
 }
 

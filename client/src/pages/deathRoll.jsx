@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import '../styles/deathRoll.css';
 import WagerButton from '../components/wagerButton';
 import { useCurrency } from '../components/currencyContext';
+import { useTheme } from '@emotion/react';
 
 const generateFixedReel = () => {
     const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
@@ -12,6 +13,7 @@ const MIN_WAGER = 50
 const WIN_MOD = 1.75
 
 const DeathRoll = () => {
+    const theme = useTheme()
     const initialReel = useRef(generateFixedReel());
     const { soulCoins, setSoulCoins } = useCurrency();
     const [reelNumbers, setReelNumbers] = useState(initialReel.current);
@@ -113,6 +115,7 @@ const DeathRoll = () => {
                 alert("Not enough Soul Coins!")
                 return
             }
+            console.log(wager)
             setSoulCoins((prev) => prev - wager)
             setInGame(true)
         }
@@ -152,7 +155,7 @@ const DeathRoll = () => {
     }, [playersTurn, rollReel, spinning]);
 
     return (
-        <div>
+        <div style={{ backgroundColor: theme.palette.deathRoll.main, color: theme.palette.deathRoll.contrastText }}>
             <div className='text-center'>
                 {gameOver && payout ? <span><h2>Win {payout}</h2></span> :
                     gameOver && !payout ? <span><h2>Womp Womp!</h2></span> :
@@ -180,7 +183,7 @@ const DeathRoll = () => {
                 </button>
             </div>
             <div className='row text-center'>
-                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={inGame} />
+                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={inGame} theme={theme.palette.deathRoll} />
             </div>
         </div>
     );

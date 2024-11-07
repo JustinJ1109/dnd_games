@@ -136,7 +136,7 @@ function Layout({ pages }) {
                         Cash Out
                     </Button>}
                     <Box>
-                        Soul Coins: {soulCoins}
+                        Soul Coins: {soulCoins.toFixed(2)}
                     </Box>
                 </Toolbar>
             </Container>

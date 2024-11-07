@@ -2,9 +2,8 @@ import { TextField } from "@mui/material"
 import { useCurrency } from "./currencyContext";
 import { useTheme } from "@emotion/react";
 
-const WagerButton = ({ min_wager, wager, setWager, disabled, ...props }) => {
+const WagerButton = ({ min_wager, wager, setWager, disabled, theme, ...props }) => {
     const { soulCoins, setSoulCoins } = useCurrency();
-    const theme = useTheme()
 
     const validateWager = (e) => {
         if (disabled) {
@@ -31,7 +30,7 @@ const WagerButton = ({ min_wager, wager, setWager, disabled, ...props }) => {
                 <TextField
                     disabled={disabled}
                     size="small"
-                    sx={{ ml: "10px", mr: "10px", borderColor: "game.main", input: { color: "game.contrastText", backgroundColor: "game.main" }, width: '100px' }}
+                    sx={{ ml: "10px", mr: "10px", borderColor: theme?.main, input: { color: theme?.contrastText || "black", backgroundColor: theme?.main || "white" }, width: '100px' }}
                     onBlur={validateWager}
                     placeholder={min_wager.toString()}
                 >
