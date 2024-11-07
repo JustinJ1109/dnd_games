@@ -4,7 +4,6 @@ import { useCurrency } from "../components/currencyContext";
 import Die from "../components/die";
 import { Box, Button } from "@mui/material";
 import '../styles/rollDice.css'
-import '../styles/fiends_favor.css'
 
 import WagerButton from "../components/wagerButton";
 import Rules from "../components/rules";

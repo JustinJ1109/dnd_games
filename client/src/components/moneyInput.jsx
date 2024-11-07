@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState } from "react";
-import "../styles/moneyInput.css";
 import { TextField, Button, Box, Typography, Stack, Chip } from '@mui/material';
 import { useCurrency } from './currencyContext';
 import { styled } from '@mui/system';
@@ -134,7 +133,7 @@ const MoneyInput = () => {
     }, [convertedCurrency])
 
     return (
-        <Box justifyContent="center" alignItems="center" display="flex" >
+        <Box justifyContent="center" alignItems="center" display="flex" sx={{ bgcolor: "dark.main", height: "91vh" }} >
             <Container>
                 < Typography variant="h4" sx={{ color: '#d4af37', fontWeight: '700' }
                 }>

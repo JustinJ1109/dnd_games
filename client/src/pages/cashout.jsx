@@ -14,7 +14,7 @@ const Cashout = () => {
 
 
     return (
-        <Box sx={{ justifyContent: "center", display: 'flex', alignItems: "center" }}>
+        <Box sx={{ justifyContent: "center", display: 'flex', alignItems: "center", height: "92vh", bgcolor: "dark.main" }}>
             <Container sx={{ width: 1 / 4 }}>
                 <TableContainer component={Paper}>
                     <Table>
