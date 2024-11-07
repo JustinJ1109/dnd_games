@@ -1,3 +1,4 @@
+import { Box, List, ListItem } from "@mui/material"
 
 
 const Rules = ({ gamemode }) => {
@@ -10,7 +11,7 @@ const Rules = ({ gamemode }) => {
                             Choose a number 1-6
                         </li>
                         <li>
-                            Choose your wager amount
+                            Choose your wager amount (10 SC Minimum)
                         </li>
                         <li>
                             Roll the Dice
@@ -37,7 +38,7 @@ const Rules = ({ gamemode }) => {
             return (
                 <div>
                     <ul>
-                        <li>Choose your wager denomination</li>
+                        <li>Choose your wager denomination (10 SC Minimum)</li>
                         <li>
                             Click on whichever bets you want to place (Or use the X button to remove existing bets)<br />
                             Payouts:
@@ -52,10 +53,27 @@ const Rules = ({ gamemode }) => {
                 </div>
             )
         }
+        else if (gamemode === "deathRoll") {
+            return (
+                <Box>
+                    <List>
+                        <ListItem dense>Choose your wager amount (50 SC minimum)</ListItem>
+                        <ListItem dense>Starting from 100, take turns rolling against the House, rolling between 1 and the previously rolled number.</ListItem>
+                        <ListItem dense>Whoever rolls a 1 loses</ListItem>
+                        <ListItem dense>
+                            Payout:
+                            <List>
+                                <ListItem dense>House rolls a 1 - 1:1 </ListItem>
+                            </List>
+                        </ListItem>
+                    </List>
+                </Box>
+            )
+        }
     }
 
     return (
-        <div className="row rules" style={{ display: "inline-block" }}>
+        <div className="row rules" style={{ display: "flex" }}>
             {String(gamemode).charAt(0).toUpperCase() + String(gamemode).slice(1)} Rules
             <hr />
             {getRulesForGamemode()}

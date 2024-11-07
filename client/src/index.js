@@ -21,7 +21,7 @@ import Game from './pages/game';
 import CoinCalculator from './pages/test';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const pages = { "Fiend's Favor": "fiends-favor", 'Death Roll': 'death-roll', "Roulette": "roulette" };
+const pages = { "Deposit": "", "Fiend's Favor": "fiends-favor", 'Death Roll': 'death-roll', "Roulette": "roulette", };
 
 const submitBet = (game, wager) => {
   console.log(game, wager)

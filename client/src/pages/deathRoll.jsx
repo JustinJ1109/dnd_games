@@ -3,6 +3,8 @@ import '../styles/deathRoll.css';
 import WagerButton from '../components/wagerButton';
 import { useCurrency } from '../components/currencyContext';
 import { useTheme } from '@emotion/react';
+import { Box, Container, Stack } from '@mui/material';
+import Rules from '../components/rules';
 
 const generateFixedReel = () => {
     const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
@@ -10,7 +12,7 @@ const generateFixedReel = () => {
 };
 
 const MIN_WAGER = 50
-const WIN_MOD = 1.75
+const WIN_MOD = 2
 
 const DeathRoll = () => {
     const theme = useTheme()
@@ -155,37 +157,44 @@ const DeathRoll = () => {
     }, [playersTurn, rollReel, spinning]);
 
     return (
-        <div style={{ backgroundColor: theme.palette.deathRoll.main, color: theme.palette.deathRoll.contrastText }}>
-            <div className='text-center'>
-                {gameOver && payout ? <span><h2>Win {payout}</h2></span> :
-                    gameOver && !payout ? <span><h2>Womp Womp!</h2></span> :
-                        playersTurn ? <span>Your turn</span> :
-                            <span>House's Turn</span>}
-            </div>
-            <div className="death-roll-container">
-                <div className="reel-mask">
-                    <div className="reel">
-                        {displayedNumbers.map((number, index) => (
-                            <div
-                                key={index}
-                                className={`reel-box ${index === 1 && !spinning ? 'highlight' : ''} ${dropNumbers.includes(number) ? 'drop' : ''}`}
-                            >
-                                {number}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <button onClick={gameOver ? resetGame : rollReel} className="roll-button" disabled={spinning || !playersTurn}>
-                    {spinning ? "Rolling..." :
-                        gameOver ? "Play Again" :
-                            playersTurn ? "Roll" :
-                                "House's Roll"}
-                </button>
-            </div>
-            <div className='row text-center'>
-                <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={inGame} theme={theme.palette.deathRoll} />
-            </div>
-        </div>
+        <Box className="game-space" sx={{ backgroundColor: "deathRoll.main", color: "deathRoll.contrastText" }}>
+            <Stack direction="row" sx={{ alignItems: "center", width: 1 }} spacing={18}>
+                <Box sx={{ width: 1 / 3 }}>
+                    <Rules gamemode="deathRoll" />
+                </Box>
+                <Box>
+                    <Box className='text-center'>
+                        {gameOver && payout ? <span><h2>Win {payout}</h2></span> :
+                            gameOver && !payout ? <span><h2>Womp Womp!</h2></span> :
+                                playersTurn ? <span>Your turn</span> :
+                                    <span>House's Turn</span>}
+                    </Box>
+                    <Box className="death-roll-container">
+                        <Box className="reel-mask">
+                            <Box className="reel">
+                                {displayedNumbers.map((number, index) => (
+                                    <Box
+                                        key={index}
+                                        className={`reel-box ${index === 1 && !spinning ? 'highlight' : ''} ${dropNumbers.includes(number) ? 'drop' : ''}`}
+                                    >
+                                        {number}
+                                    </Box>
+                                ))}
+                            </Box>
+                        </Box>
+                        <button onClick={gameOver ? resetGame : rollReel} className="roll-button" disabled={spinning || !playersTurn}>
+                            {spinning ? "Rolling..." :
+                                gameOver ? "Play Again" :
+                                    playersTurn ? "Roll" :
+                                        "House's Roll"}
+                        </button>
+                    </Box>
+                    <Box className='row text-center'>
+                        <WagerButton min_wager={MIN_WAGER} wager={wager} setWager={setWager} disabled={inGame} theme={theme.palette.deathRoll} />
+                    </Box>
+                </Box>
+            </Stack>
+        </Box >
     );
 };
 
