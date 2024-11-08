@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 const CurrencyContext = createContext();
 
 export const CurrencyProvider = ({ children }) => {
-    const [soulCoins, setSoulCoins] = useState(parseFloat(Cookies.get("soulCoins")) ?? 0);
+    const [soulCoins, setSoulCoins] = useState(isNaN(parseFloat(Cookies.get("soulCoins"))) ? 0 : parseFloat(Cookies.get("soulCoins")));
 
     const convertToSoulCoins = (currencies) => {
         const totalSoulCoins = (currencies.gold ?? 0) * 10 + (currencies.silver ?? 0) * 1 + (currencies.copper ?? 0) * 0.1;

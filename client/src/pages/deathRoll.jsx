@@ -3,7 +3,7 @@ import '../styles/deathRoll.css';
 import WagerButton from '../components/wagerButton';
 import { useCurrency } from '../components/currencyContext';
 import { useTheme } from '@emotion/react';
-import { Box, Container, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import Rules from '../components/rules';
 
 const generateFixedReel = () => {
@@ -31,10 +31,16 @@ const DeathRoll = () => {
     const [gameOver, setGameOver] = useState(false)
     const [inGame, setInGame] = useState(false)
 
+
     function getDisplayedNumbers(reel) {
+        let numDisplayed = reel.length >= 5 ? 5 :
+            reel.length >= 3 ? 3 : 1
+        // display one to the right
+        numDisplayed += 1
         const centerNum = reel.indexOf(100);
         const leftNum = centerNum === 0 ? reel.length - 1 : centerNum - 1;
         const rightNum = centerNum === reel.length - 1 ? 0 : centerNum + 1;
+        const doubleRightNum = rightNum + 1 === reel.length - 1 ? 1 : rightNum + 1
         return [reel[leftNum], reel[centerNum], reel[rightNum]];
     }
 
@@ -124,8 +130,8 @@ const DeathRoll = () => {
         try {
             await startSpin();
             const lockedNumber = await stopSpinAndLockNumber();
-            await updateDisplayedNumbers(lockedNumber);
             await updateDroppedNumbers(lockedNumber);
+            await updateDisplayedNumbers(lockedNumber);
             await endTurnOrReset(lockedNumber);
         } catch (error) {
             console.error("Error during rollReel:", error);

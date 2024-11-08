@@ -65,3 +65,17 @@
     background-color: #555;
     cursor: not-allowed;
 }
+
+.spinning-slot {
+    animation: spinLeft 0.5s linear infinite;
+}
+
+@keyframes spinLeft {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-100%)
+    }
+}
