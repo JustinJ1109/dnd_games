@@ -19,6 +19,8 @@ import Cashout from './pages/cashout';
 import Roulette from './pages/roulette';
 import Game from './pages/game';
 import CoinCalculator from './pages/test';
+import DeathRollTest from './components/deathRollTest';
+import AppExample from './components/test';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const pages = { "Deposit": "", "Fiend's Favor": "fiends-favor", 'Death Roll': 'death-roll', "Roulette": "roulette", };
@@ -39,6 +41,8 @@ root.render(
             <Route path="/death-roll" element={<Game game={"deathRoll"} submitBet={submitBet} />} />
             <Route path="/cashout" element={<Cashout />} />
             <Route path="/roulette" element={<Game game={"roulette"} />} />
+            <Route path="/dr" element={<DeathRollTest />} />
+            <Route path="app" element={<AppExample />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
 

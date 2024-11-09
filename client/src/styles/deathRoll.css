@@ -14,12 +14,14 @@
     border-radius: 8px;
     position: relative;
     margin-bottom: 20px;
+    /* background-color: red; */
 }
 
 .reel {
     display: flex;
-    width: 100%;
+    width: 400px;
     justify-content: center;
+    /* background-color: blue; */
 }
 
 .reel-box {
@@ -67,7 +69,7 @@
 }
 
 .spinning-slot {
-    animation: spinLeft 0.5s linear infinite;
+    animation: spinLeft .25s infinite;
 }
 
 @keyframes spinLeft {
