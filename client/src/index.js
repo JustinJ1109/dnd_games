@@ -23,7 +23,7 @@ import DeathRollTest from './components/deathRollTest';
 import AppExample from './components/test';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const pages = { "Deposit": "", "Fiend's Favor": "fiends-favor", 'Death Roll': 'death-roll', "Roulette": "roulette", };
+const pages = { "Deposit": "", 'Death Roll': 'death-roll', "Roulette": "roulette", };
 
 const submitBet = (game, wager) => {
   console.log(game, wager)
@@ -38,10 +38,10 @@ root.render(
           <Routes>
             <Route index element={<MoneyInput />} />
             <Route path="/fiends-favor" element={<Game game={"fiendsFavor"} />} />
-            <Route path="/death-roll" element={<Game game={"deathRoll"} submitBet={submitBet} />} />
             <Route path="/cashout" element={<Cashout />} />
             <Route path="/roulette" element={<Game game={"roulette"} />} />
             <Route path="/dr" element={<DeathRollTest />} />
+            <Route path="/death-roll" element={<Game game={"deathRoll"} />} />
             <Route path="app" element={<AppExample />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

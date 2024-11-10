@@ -1,27 +1,29 @@
 import styled from '@emotion/styled';
-import { css, keyframes } from '@emotion/react';
+import { css, keyframes, useTheme } from '@emotion/react';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Box } from '@mui/system';
 
+const SLOT_DATA = {
+    big: {
+        size: 5,
+        selectedIdx: 2
+    },
+    medium: {
+        size: 3,
+        selectedIdx: 1
+    },
+    small: {
+        size: 1,
+        selectedIdx: 0
+    }
+}
+
+const SPIN_SPEED_MS = 500
 const generateFixedReel = () => {
     let numbers = Array.from({ length: 100 }, (_, i) => i + 1)
     numbers = numbers.sort(() => Math.random() - 0.5)
     return numbers
 }
-
-// min (inclusive) to max(inclusive)
-const randomIntFromInterval = (min, max) => {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-}
-
-const SPIN_SPEED_MS = {
-    max: 50,
-    min: 500
-}
-
-const STARTING_NUM_SLOTS = 5
-// represents the 'selected' number, the other 2 are just to illustrate the reel
-const SELECTED_SLOT_INDEX = 2
 
 const spinKf = keyframes`
     0% { transform: translateX(0); }
@@ -42,17 +44,20 @@ const ReelSlotWrapper = styled.div`
     ${({ spinning }) =>
         spinning &&
         css`
-            animation: ${spinKf} ${((SPIN_SPEED_MS.max - .5) / 1000.0)}s infinite;
+            animation: ${spinKf} ${((SPIN_SPEED_MS - .5) / 1000.0)}s infinite;
         `
     }
     
     ${({ selected, spinning }) =>
-        selected && !spinning &&
-        css`
-            border: 2px solid #ffc733;
+        selected && !spinning ?
+            css`
+            border: 5px solid #ffc733;
             backgroundColor: #444;
             boxShadow: 0 0 15px #ffd700;
             transform: scale(1.1);
+        ` :
+            css`
+            border: 1px solid #ffc733
         `
     }
     `
@@ -65,128 +70,109 @@ const ReelSlot = ({ number, spinning, selected }) => {
     )
 }
 
+
+
 const DeathRollTest = () => {
     const initialReel = useRef(generateFixedReel())
     const [reelNumbers, setReelNumbers] = useState(initialReel.current)
-    const [numSlots, setNumSlots] = useState(STARTING_NUM_SLOTS)
+    const [slotData, setSlotData] = useState(SLOT_DATA.big)
+    const [playersTurn, setPlayersTurn] = useState(true)
+    const [gameOver, setGameOver] = useState(false)
+    const theme = useTheme()
 
-    const getDisplayedNumbers = useCallback((selectedNum) => {
-        if (reelNumbers.length < numSlots) {
-            // Fallback for cases with fewer numbers than slots
-            return [...reelNumbers, ...Array(numSlots - reelNumbers.length).fill(null)];
+    const getDisplayedNumbers = (centerIdx, reel, slotData) => {
+        let nums = []
+        for (let i = 0; i < slotData.size + 1; i++) {
+            let idx = centerIdx - slotData.selectedIdx + i
+            if (idx < 0) {
+                idx = reel.length - i - 1
+            }
+            else if (idx >= reel.length) {
+                idx = i
+            }
+            nums.push(idx)
         }
+        return nums
+    }
 
-        let newStartIndex = selectedNum !== undefined
-            ? reelNumbers.indexOf(selectedNum) % reelNumbers.length
-            : (reelNumbers.indexOf(100) - SELECTED_SLOT_INDEX + reelNumbers.length) % reelNumbers.length;
-
-        let newDisplayNumbers = [];
-        for (const x of Array(numSlots + 1).keys()) {
-            newDisplayNumbers.push(reelNumbers[(newStartIndex + x) % reelNumbers.length]);
-        }
-        return newDisplayNumbers;
-    }, [numSlots, reelNumbers]);
-
-    const [displayedNumbers, setDisplayedNumbers] = useState(getDisplayedNumbers())
+    const [displayedNumberIndexes, setDisplayedNumberIndexes] = useState(() => {
+        const idx100 = reelNumbers.indexOf(100)
+        return getDisplayedNumbers(idx100, reelNumbers, slotData)
+    })
     const [spinning, setSpinning] = useState(false)
     const spinInterval = useRef(null)
-    const timeouts = useRef([])
-    const [readyToStopSpinning, setReadyToStopSpinning] = useState(true)
 
-    // const startSpin = useCallback(async () => {
-    //     setSpinning(true)
-
-    //     // Generate the winning index
-    //     const winningIndex = Math.floor(Math.random() * reelNumbers.length)
-    //     let intervals = 0
-    //     let minIntervals = randomIntFromInterval(80, 120) // Minimum intervals before stopping
-    //     console.log("Min intervals", minIntervals)
-    //     console.log("winning idx", winningIndex)
-    //     console.log("winning nbr", reelNumbers[winningIndex])
-    //     return new Promise((resolve) => {
-    //         spinInterval.current = setInterval(() => {
-    //             setDisplayedNumbers((prev) => {
-    //                 // Get the updated numbers based on the previous displayed numbers
-    //                 const newDisplayNumbers = getDisplayedNumbers(
-    //                     prev[(SELECTED_SLOT_INDEX - 1) < 0 ?
-    //                         reelNumbers.length - 1 :
-    //                         SELECTED_SLOT_INDEX - 1]
-    //                 )
-    //                 intervals++
-    //                 // Check if we've reached the winning number after minimum intervals
-    //                 if (
-    //                     intervals >= minIntervals &&
-    //                     newDisplayNumbers[SELECTED_SLOT_INDEX] === reelNumbers[winningIndex]
-    //                 ) {
-    //                     // Winning condition met, stop the spin
-    //                     clearInterval(spinInterval.current)
-    //                     setSpinning(false)
-    //                     resolve() // Resolve the promise
-    //                 }
-    //                 return newDisplayNumbers
-    //             });
-    //         }, SPIN_SPEED_MS.max)
-    //     })
-
-
-    // }, [getDisplayedNumbers, reelNumbers])
-
-    const startSpin = useCallback(() => {
+    const startSpin = (stopOnIdx, numIterations) => {
         return new Promise((resolve) => {
-            setSpinning(true)
-            setReadyToStopSpinning(false)
-            const winningIndex = Math.floor(Math.random() * reelNumbers.length)
-            console.log("winning nbr", reelNumbers[winningIndex])
-
+            setSpinning(true);
+            let currentIter = 0
+            // Start a new interval to rotate displayed numbers
             spinInterval.current = setInterval(() => {
-                setDisplayedNumbers((prev) => {
-                    const newDisplayNumbers = getDisplayedNumbers(
-                        prev[(SELECTED_SLOT_INDEX - 1) < 0 ?
-                            reelNumbers.length - 1 :
-                            SELECTED_SLOT_INDEX - 1]
-                    )
-                    return newDisplayNumbers
-                });
-            }, SPIN_SPEED_MS.max);
+                setDisplayedNumberIndexes((prev) => prev.map(val => val + 1 >= reelNumbers.length ? 0 : val + 1))
+                if (currentIter >= numIterations) {
+                    clearInterval(spinInterval.current)
+                    setSpinning(false)
+                    resolve()
+                }
+                currentIter++
+            }, SPIN_SPEED_MS);
+        });
+    };
 
-            setTimeout(() => {
-                setReadyToStopSpinning(true)
-            }, 1400)
+    const checkGame = (landedIdx) => {
+        if (reelNumbers[landedIdx] === 1) {
+            if (playersTurn) {
+                alert("You lose!")
+            }
+            else {
+                alert("You win!")
+            }
+            setGameOver(true)
+        }
+    }
+
+    const resetGame = () => {
+        clearInterval(spinInterval.current)
+        setSpinning(false)
+        setReelNumbers(initialReel.current)
+        setSlotData(SLOT_DATA.big)
+        setPlayersTurn(true)
+        setDisplayedNumberIndexes(getDisplayedNumbers(initialReel.current.indexOf(100), initialReel.current, SLOT_DATA.big))
+        setGameOver(false)
+    }
+
+    const spin = async () => {
+        // const spinForLength = 
+        const landedIdx = Math.floor(Math.random() * reelNumbers.length); // Choose a random winning index
+        const numIterations = reelNumbers.length - 1 - (displayedNumberIndexes[slotData.selectedIdx] - landedIdx)
+        console.log("Winning index:", landedIdx, "NumIter", numIterations, "Winning number", reelNumbers[landedIdx]);
+
+        await startSpin(landedIdx, numIterations); // Start the spinning
+        const newNums = reelNumbers.filter(val => val <= reelNumbers[landedIdx])
+        console.log(newNums)
+        setReelNumbers((prev) => {
+            const newReel = prev.filter(val => val <= prev[landedIdx])
+            let newSlotData = null
+            if (newReel.length <= SLOT_DATA.big.size + 1) {
+                newSlotData = SLOT_DATA.medium
+            }
+            if (newReel.length <= SLOT_DATA.medium.size + 1) {
+                newSlotData = SLOT_DATA.small
+            }
+            newSlotData && setSlotData(newSlotData)
+            setDisplayedNumberIndexes(getDisplayedNumbers(newReel.indexOf(reelNumbers[landedIdx]), newReel, newSlotData ?? slotData))
+
+            return newReel
         })
-    })
-
-    useEffect(() => {
-        if (spinning) return
-
-        const selectedNum = displayedNumbers[SELECTED_SLOT_INDEX]
-        setReelNumbers(
-            (prev) => prev.filter((num) => num <= selectedNum)
-        )
-    }, [displayedNumbers, spinning])
-
-    useEffect(() => {
-        console.log(reelNumbers)
-        if (reelNumbers.length <= 2) {
-            setNumSlots(1)
-        }
-        else if (reelNumbers.length <= 5) {
-            setNumSlots(3)
-        }
-    }, [reelNumbers])
-
-    const spin = useCallback(async () => {
-        const spinDurationMs = randomIntFromInterval(2000, 5000)
-        console.log("Spinning for", spinDurationMs)
-        await startSpin()
-        console.log("Done")
-    }, [startSpin])
+        checkGame(landedIdx)
+    };
 
     return (
-        <Box className='game-window' style={{ backgroundColor: "#222" }}>
-            <Box className='game-reel-mask' style={{
+        <div className='game-window' style={{ backgroundColor: "#222" }}>
+            <div className='game-reel-mask' style={{
                 display: "flex",
                 overflow: "hidden",
-                width: numSlots * 100,
+                width: slotData.size * 100,
                 height: 100,
                 border: "2px solid #ffc733",
                 backgroundColor: "#333",
@@ -194,25 +180,36 @@ const DeathRollTest = () => {
                 position: "relative",
                 marginBottom: 20
             }}>
-                <Box className='game-reel'
+                <div className='game-reel'
                     style={{
                         display: "flex",
                         justifyContent: "center",
-                        width: numSlots * 100 + 100,
+                        width: slotData.size * 100 + 100,
                     }}
                 >
-                    {displayedNumbers.map((number, index) => (
-                        <ReelSlot
-                            key={`${number}-${index}`}
-                            number={number}
-                            selected={index === SELECTED_SLOT_INDEX}
-                            spinning={spinning}
-                        />
-                    ))}
-                </Box>
-            </Box>
-            <input type="button" value='Spin' onClick={spin} disabled={spinning} />
-        </Box>
+                    {displayedNumberIndexes.map((reelIdx, idx) => {
+                        return (
+                            <ReelSlot
+                                key={`${reelIdx}`}
+                                number={reelNumbers[reelIdx]}
+                                selected={idx === slotData.selectedIdx}
+                                spinning={spinning}
+                            />)
+                    })}
+                </div>
+            </div>
+            {playersTurn ?
+                <Box color="dark.contrastText">
+                    Your Turn
+                </Box> :
+                <Box color="dark.contrastText">
+                    House's Turn
+                </Box>}
+            {gameOver ?
+                <input type="button" value="Reset" onClick={resetGame} /> :
+                <input type="button" value='Spin' onClick={spin} disabled={spinning || !playersTurn} />
+            }
+        </div>
     )
 
 }
