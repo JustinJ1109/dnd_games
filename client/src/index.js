@@ -23,7 +23,7 @@ import DeathRollTest from './components/deathRollTest';
 import AppExample from './components/test';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-const pages = { "Deposit": "", 'Death Roll': 'death-roll', "Roulette": "roulette", };
+const pages = { "Deposit": "", "Fiend's Favor": "fiends-favor", 'Death Roll': 'death-roll', "Roulette": "roulette", };
 
 const submitBet = (game, wager) => {
   console.log(game, wager)
