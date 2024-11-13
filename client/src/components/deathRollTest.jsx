@@ -25,34 +25,20 @@ const generateFixedReel = () => {
     numbers = numbers.sort(() => Math.random() - 0.5)
     return numbers
 }
-// TODO: Remove
-const POTENTIAL_BEZIERS = [
-    "cubic-bezier(.52,.4,0,.97)",
-    "cubic-bezier(.34,.68,0,1)",
-    "cubic-bezier(.89,.11,0,1)"
-]
 
 const Reel = ({ reelItems, selectedItem }) => {
-    console.log("Reel Width:", reelItems.length * 100)
-    console.log(reelItems)
-
     const ref = useRef(null)
 
     useEffect(() => {
-        console.log("call ref left from start")
         if (ref.current) {
-            console.log(reelItems, selectedItem, reelItems.lastIndexOf(selectedItem.current))
             const oldLeft = 0
             const newLeft = (reelItems.lastIndexOf(selectedItem.current) - 2) * 100 * -1
-            console.log("New left", newLeft, "old left", oldLeft)
             ref.current.style.transition = ``
             ref.current.style.left = `${oldLeft}px`
             if (reelItems.length > 5) {
-                console.log(selectedItem)
                 setTimeout(() => {
                     ref.current.style.transition = `left ${SPIN_TIME_MS / 1000}s cubic-bezier(.6,.01,0,1)`
                     ref.current.style.left = `${newLeft}px`
-
                 }, 100)
 
             }
@@ -86,7 +72,6 @@ const Reel = ({ reelItems, selectedItem }) => {
                                 color: "#ffc733",
                                 border: "5px solid #f2dfae",
                                 backgroundColor: "#444",
-                                // boxShadow: "0 0 15px #ffd700",
                                 transform: "scale(1.1)",
                             }}
                         >
@@ -109,23 +94,23 @@ const DeathRollTest = () => {
         current: { number: 100, idx: fixedReel.indexOf(100) }
     })
 
-    const getReelInRange = useCallback((startingSelectedIdx, endingSelectedIdx, rotations) => {
+    const getReelInRange = useCallback((reel, startingSelectedIdx, endingSelectedIdx, rotations) => {
         let newReel = []
 
         let differenceBetweenStartStop = endingSelectedIdx >= startingSelectedIdx ?
             endingSelectedIdx - startingSelectedIdx :
-            reelNumbers.length - startingSelectedIdx + endingSelectedIdx
-        const reelLength = slotData.size + (rotations * reelNumbers.length) + differenceBetweenStartStop
+            reel.length - startingSelectedIdx + endingSelectedIdx
+        const reelLength = slotData.size + (rotations * reel.length) + differenceBetweenStartStop
 
         for (let i = 0; i < reelLength; i++) {
-            let currentInReelIdx = getIndexInReel(reelNumbers, i + startingSelectedIdx - (slotData.size - slotData.selectedIdx) + 1)
-            newReel.push(reelNumbers[currentInReelIdx])
+            let currentInReelIdx = getIndexInReel(reel, i + startingSelectedIdx - (slotData.size - slotData.selectedIdx) + 1)
+            newReel.push(reel[currentInReelIdx])
         }
 
         return newReel
-    }, [reelNumbers, slotData.selectedIdx, slotData.size])
+    }, [slotData.selectedIdx, slotData.size])
 
-    const [renderedReel, setRenderedReel] = useState(getReelInRange(selectedNumbers.prev.idx, selectedNumbers.current.idx, 0))
+    const [renderedReel, setRenderedReel] = useState(getReelInRange(reelNumbers, selectedNumbers.prev.idx, selectedNumbers.current.idx, 0))
     const [playersTurn, setPlayersTurn] = useState(true)
     const [gameOver, setGameOver] = useState(false)
 
@@ -156,21 +141,22 @@ const DeathRollTest = () => {
             else {
                 setGameOver("You win!")
             }
+            return
         }
+        const newReel = reelNumbers.filter(val => val.number <= selectedNumbers.current.number)
+        console.log(newReel)
     }
 
     const spin = async () => {
         const selectedIndex = Math.floor(Math.random() * reelNumbers.length); // Choose a random winning index
-        console.log("Spin, selectedIdx", selectedIndex, "selectedNums", selectedNumbers)
         setSelectedNumbers(prev => (
             {
                 prev: prev.current,
                 current: reelNumbers[selectedIndex]
             }
         ))
-        setRenderedReel(getReelInRange(selectedNumbers.current.idx, selectedIndex, 2))
-        console.log("REEEL NUMBERS", reelNumbers)
-        setInterval(() => {
+        setRenderedReel(getReelInRange(reelNumbers, selectedNumbers.current.idx, selectedIndex, 2))
+        setTimeout(() => {
             checkWin()
         }, [SPIN_TIME_MS])
     };
