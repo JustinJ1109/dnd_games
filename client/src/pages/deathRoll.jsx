@@ -7,22 +7,12 @@ import { Box, Stack } from '@mui/material';
 import Rules from '../components/rules';
 
 const generateFixedReel = () => {
-    let numbers = Array.from({ length: 100 }, (_, i) => i + 1);
-    numbers = numbers.sort(() => Math.random() - 0.5);
-    return numbers
+    const numbers = Array.from({ length: 100 }, (_, i) => i + 1);
+    return numbers.sort(() => Math.random() - 0.5);
 };
 
 const MIN_WAGER = 50
 const WIN_MOD = 2
-
-const getDisplayedNumbers = (reel) => {
-    const centerNum = reel.indexOf(100);
-    const leftNum = centerNum === 0 ? reel.length - 1 : centerNum - 1;
-    const rightNum = centerNum === reel.length - 1 ? 0 : centerNum + 1;
-    const secondRightNum = centerNum === reel.length - 2 ? 0 : centerNum + 2;
-
-    return [reel[leftNum], reel[centerNum], reel[rightNum], reel[secondRightNum]];
-}
 
 const DeathRoll = () => {
     const theme = useTheme()
@@ -42,6 +32,18 @@ const DeathRoll = () => {
     const [inGame, setInGame] = useState(false)
 
 
+    function getDisplayedNumbers(reel) {
+        let numDisplayed = reel.length >= 5 ? 5 :
+            reel.length >= 3 ? 3 : 1
+        // display one to the right
+        numDisplayed += 1
+        const centerNum = reel.indexOf(100);
+        const leftNum = centerNum === 0 ? reel.length - 1 : centerNum - 1;
+        const rightNum = centerNum === reel.length - 1 ? 0 : centerNum + 1;
+        const doubleRightNum = rightNum + 1 === reel.length - 1 ? 1 : rightNum + 1
+        return [reel[leftNum], reel[centerNum], reel[rightNum]];
+    }
+
     const startSpin = () => {
         return new Promise((resolve) => {
             setSpinning(true);
@@ -49,28 +51,26 @@ const DeathRoll = () => {
 
             spinInterval.current = setInterval(() => {
                 setDisplayedNumbers((prev) => {
-                    const newStartIndex = (reelNumbers.indexOf(prev[1])) % reelNumbers.length;
+                    const newStartIndex = (reelNumbers.indexOf(prev[1]) + 1) % reelNumbers.length;
                     return [
                         reelNumbers[newStartIndex],
                         reelNumbers[(newStartIndex + 1) % reelNumbers.length],
-                        reelNumbers[(newStartIndex + 2) % reelNumbers.length],
-                        reelNumbers[(newStartIndex + 3) % reelNumbers.length]
+                        reelNumbers[(newStartIndex + 2) % reelNumbers.length]
                     ];
                 });
-            }, 250);
+            }, 50);
 
-            timeouts.current.push(setTimeout(resolve, 2000));
+            timeouts.current.push(setTimeout(resolve, 1500));
         });
     };
 
     const stopSpinAndLockNumber = () => {
         return new Promise((resolve) => {
             clearInterval(spinInterval.current);
-            // console.log(displayedNumbers)
-            // const newLockedNumber = reelNumbers[Math.floor(Math.random() * reelNumbers.length)];
-            // setLockedNumber(newLockedNumber);
+            const newLockedNumber = reelNumbers[Math.floor(Math.random() * reelNumbers.length)];
+            setLockedNumber(newLockedNumber);
             setSpinning(false);
-            // resolve(newLockedNumber);
+            resolve(newLockedNumber);
         });
     };
 
@@ -80,8 +80,7 @@ const DeathRoll = () => {
             setDisplayedNumbers([
                 reelNumbers[(lockedIndex - 1 + reelNumbers.length) % reelNumbers.length],
                 lockedNumber,
-                reelNumbers[(lockedIndex + 1) % reelNumbers.length],
-                reelNumbers[(lockedIndex + 2) % reelNumbers.length]
+                reelNumbers[(lockedIndex + 1) % reelNumbers.length]
             ]);
             resolve();
         });
@@ -113,6 +112,10 @@ const DeathRoll = () => {
             resolve();
         });
     };
+
+    useEffect(() => {
+        setSoulCoins((prev) => prev + payout)
+    }, [payout, setSoulCoins])
 
     const rollReel = useCallback(async () => {
         if (!inGame) {
@@ -151,14 +154,6 @@ const DeathRoll = () => {
     }, []);
 
     useEffect(() => {
-        setSoulCoins((prev) => prev + payout)
-    }, [payout, setSoulCoins])
-
-    useEffect(() => {
-        // console.log(displayedNumbers)
-    }, [displayedNumbers])
-
-    useEffect(() => {
         if (!playersTurn && !spinning) {
             const autoRollTimeout = setTimeout(() => {
                 rollReel();
@@ -186,7 +181,7 @@ const DeathRoll = () => {
                                 {displayedNumbers.map((number, index) => (
                                     <Box
                                         key={index}
-                                        className={`${spinning && 'spinning-slot'} reel-box ${index === 1 && !spinning ? 'highlight' : ''} ${dropNumbers.includes(number) ? 'drop' : ''}`}
+                                        className={`reel-box ${index === 1 && !spinning ? 'highlight' : ''} ${dropNumbers.includes(number) ? 'drop' : ''}`}
                                     >
                                         {number}
                                     </Box>

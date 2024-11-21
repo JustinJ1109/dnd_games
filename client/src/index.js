@@ -34,7 +34,7 @@ root.render(
     <CurrencyProvider>
       <BrowserRouter>
         <ThemeProvider theme={theme}>
-          {/* <Layout pages={pages} /> */}
+          <Layout pages={pages} />
           <Routes>
             <Route index element={<MoneyInput />} />
             <Route path="/fiends-favor" element={<Game game={"fiendsFavor"} />} />
